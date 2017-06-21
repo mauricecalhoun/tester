@@ -21,7 +21,7 @@ class ABTesterServiceProvider extends ServiceProvider
     {
         $config = [
             'driver'   => 'sqlite',
-            'database' => realpath("app/Database/database.sqlite"),
+            'database' => base_path("vendor/mauricecalhoun/tester/app/Database/database.sqlite"),
             'prefix'   => '',
         ];
 
