@@ -26,10 +26,10 @@
       ]
     },
     "require": {
-        "mockery/mockery": "^0.9.9"
     },
     "require-dev": {
         "orchestra/testbench": "~3.0",
-        "phpunit/phpunit": "^6.2"
+        "phpunit/phpunit": "^6.2",
+        "mockery/mockery": "^0.9.9"
     }
 }
