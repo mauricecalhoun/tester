@@ -1,0 +1,35 @@
+{
+    "name": "mauricecalhoun/tester",
+    "authors": [
+        {
+            "name": "Maurice Calhoun",
+            "email": "mauricecalhoun@randallreilly.com"
+        },
+        {
+            "name": "Bobby Perkins",
+            "email": "bobbyperkins@randallreilly.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Calhoun\\AB\\": "app/"
+        },
+        "files": [
+            "app/Helper.php"
+        ]
+    },
+    "autoload-dev": {
+      "classmap": [
+        "tests/TestingCase.php"
+      ],
+      "files": [
+      ]
+    },
+    "require": {
+        "mockery/mockery": "^0.9.9"
+    },
+    "require-dev": {
+        "orchestra/testbench": "~3.0",
+        "phpunit/phpunit": "^6.2"
+    }
+}
