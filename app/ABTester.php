@@ -249,6 +249,6 @@ class ABTester
 
     private function field($name)
     {
-      return sprintf("experiment.%s", $this->experimentName, $name);
+      return sprintf("experiment.%s", $name);
     }
 }
