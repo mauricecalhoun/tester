@@ -126,15 +126,15 @@ class ABTester
             return;
         }
 
-        $this->tester = $this->experiment->fetch($this->field('name'));
+        $this->tester = $this->experiment->fetch(session($this->field('name')));
 
-        $this->pageView($this->field('trial'));
+        $this->pageView(session($this->field('trial')));
 
         if ($this->isRefreshed($referer, $pathInfo)) {
             return;
         }
 
-        $this->interact($this->field('trial'));
+        $this->interact(session($this->field('trial')));
 
         $this->detectGoalCompletion($pathInfo);
     }
@@ -176,7 +176,7 @@ class ABTester
 
     private function pageView($trial)
     {
-        if ($this->field('pageview')) {
+        if (session($this->field('pageview'))) {
             return;
         }
 
@@ -187,7 +187,7 @@ class ABTester
 
     private function interact($trial)
     {
-        if ($this->field('interacted')) {
+        if (session($this->field('interacted'))) {
             return;
         }
 
@@ -198,7 +198,7 @@ class ABTester
 
     private function complete($goal)
     {
-        if ($this->field('completed')) {
+        if (session($this->field('completed'))) {
             return;
         }
 
@@ -214,7 +214,7 @@ class ABTester
 
     private function detectGoalCompletion($pathInfo)
     {
-        $goal = $this->tester->trial($this->field('trial'))->goals->first(function ($goal) use ($pathInfo) {
+        $goal = $this->tester->trial(session($this->field('trial')))->goals->first(function ($goal) use ($pathInfo) {
             return $goal->route == $pathInfo;
         });
 
@@ -230,7 +230,7 @@ class ABTester
 
     private function updateGoal($goal, $closure)
     {
-        return tap($this->tester->trial($this->field('trial'))->goals()->firstOrCreate(['name' => $goal['name'], 'route' => $goal['route'], 'trial' => session('experiment.trial')]), $closure)->save();
+        return tap($this->tester->trial(session($this->field('trial')))->goals()->firstOrCreate(['name' => $goal['name'], 'route' => $goal['route'], 'trial' => session($this->field('trial'))]), $closure)->save();
     }
 
     private function createBladeFile($trial)
