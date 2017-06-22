@@ -142,7 +142,6 @@ class ABTester
     public function experiment($name, $data = [])
     {
         $this->data = $data;
-        $this->experimentName = $name;
 
         session()->put($this->field('name'), $name);
 
@@ -250,6 +249,6 @@ class ABTester
 
     private function field($name)
     {
-      return sprintf("experiment.%s", $name);
+      return sprintf("experiment.%s", $this->experimentName, $name);
     }
 }
