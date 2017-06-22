@@ -29,6 +29,6 @@ class ABTesterServiceProvider extends ServiceProvider
 
         $this->commands($this->commands);
 
-        Route::pushMiddlewareToGroup('web', ABTesting::class);
+        Route::aliasMiddleware('abtest', ABTesting::class);        
     }
 }
