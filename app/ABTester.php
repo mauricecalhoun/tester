@@ -157,7 +157,7 @@ class ABTester
 
     private function trial()
     {
-        $view = ($this->tester->isActive()) ? (($this->field('trial')) ?: $this->nextTrial()) : $this->tester->original;
+        $view = ($this->tester->isActive()) ? (session($this->field('trial')) ?: $this->nextTrial()) : $this->tester->original;
 
         if (view()->exists($view)) {
             return view($view, $this->data)->render();
