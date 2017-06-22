@@ -35,6 +35,7 @@ class ABTester
         $this->experiment->reset();
         $this->trial->reset();
         $this->goal->reset();
+        session()->forget('experiment');
     }
 
     public function install()
@@ -125,15 +126,15 @@ class ABTester
             return;
         }
 
-        $this->tester = $this->experiment->fetch(session('experiment.name'));
+        $this->tester = $this->experiment->fetch($this->field('name'));
 
-        $this->pageView(session('experiment.trial'));
+        $this->pageView($this->field('trial'));
 
         if ($this->isRefreshed($referer, $pathInfo)) {
             return;
         }
 
-        $this->interact(session('experiment.trial'));
+        $this->interact($this->field('trial'));
 
         $this->detectGoalCompletion($pathInfo);
     }
@@ -141,7 +142,9 @@ class ABTester
     public function experiment($name, $data = [])
     {
         $this->data = $data;
-        session()->put('experiment.name', $name);
+        $this->experimentName = $name;
+
+        session()->put($this->field('name'), $name);
 
         return tap($this, function ($instance) use ($name) {
             $instance->tester = $this->experiment->fetch($name);
@@ -155,7 +158,7 @@ class ABTester
 
     private function trial()
     {
-        $view = ($this->tester->isActive()) ? ((session('experiment.trial')) ?: $this->nextTrial()) : $this->tester->original;
+        $view = ($this->tester->isActive()) ? (($this->field('trial')) ?: $this->nextTrial()) : $this->tester->original;
 
         if (view()->exists($view)) {
             return view($view, $this->data)->render();
@@ -167,40 +170,40 @@ class ABTester
     private function nextTrial()
     {
         return tap($this->tester->trials()->orderBy('visitors', 'asc')->firstOrFail()->name, function ($name) {
-            session()->put('experiment.trial', $name);
+            session()->put($this->field('trial'), $name);
             $this->pageView($name);
         });
     }
 
     private function pageView($trial)
     {
-        if (session('experiment.pageview')) {
+        if ($this->field('pageview')) {
             return;
         }
 
-        session(['experiment.pageview' => $this->updateTrial($trial, function ($instance) {
+        session([$this->field('pageview') => $this->updateTrial($trial, function ($instance) {
             $instance->visitors++;
         })]);
     }
 
     private function interact($trial)
     {
-        if (session('experiment.interacted')) {
+        if ($this->field('interacted')) {
             return;
         }
 
-        session(['experiment.interacted' => $this->updateTrial($trial, function ($instance) {
+        session([$this->field('interacted') => $this->updateTrial($trial, function ($instance) {
             $instance->engagement++;
         })]);
     }
 
     private function complete($goal)
     {
-        if (session("experiment.completed")) {
+        if ($this->field('completed')) {
             return;
         }
 
-        session(["experiment.completed" => $this->updateGoal($goal, function ($instance) {
+        session([$this->field('completed') => $this->updateGoal($goal, function ($instance) {
             $instance->count++;
         })]);
     }
@@ -212,7 +215,7 @@ class ABTester
 
     private function detectGoalCompletion($pathInfo)
     {
-        $goal = $this->tester->trial(session('experiment.trial'))->goals->first(function ($goal) use ($pathInfo) {
+        $goal = $this->tester->trial($this->field('trial'))->goals->first(function ($goal) use ($pathInfo) {
             return $goal->route == $pathInfo;
         });
 
@@ -228,7 +231,7 @@ class ABTester
 
     private function updateGoal($goal, $closure)
     {
-        return tap($this->tester->trial(session('experiment.trial'))->goals()->firstOrCreate(['name' => $goal['name'], 'route' => $goal['route'], 'trial' => session('experiment.trial')]), $closure)->save();
+        return tap($this->tester->trial($this->field('trial'))->goals()->firstOrCreate(['name' => $goal['name'], 'route' => $goal['route'], 'trial' => session('experiment.trial')]), $closure)->save();
     }
 
     private function createBladeFile($trial)
@@ -243,5 +246,10 @@ class ABTester
         if (!file_exists($blade)) {
             file_put_contents($blade, $trial);
         }
+    }
+
+    private function field($name)
+    {
+      return sprintf("experiment.%s", $name);
     }
 }
