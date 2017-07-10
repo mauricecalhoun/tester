@@ -128,13 +128,13 @@ class ABTester
 
         $this->tester = $this->experiment->fetch(session($this->field('name')));
 
-        $this->pageView(session($this->field('name')));
+        $this->pageView(session($this->field('trial')));
 
         if ($this->isRefreshed($referer, $pathInfo)) {
             return;
         }
 
-        $this->interact(session($this->field('name')));
+        $this->interact(session($this->field('trial')));
 
         $this->detectGoalCompletion($pathInfo);
     }
