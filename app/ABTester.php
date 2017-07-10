@@ -157,7 +157,7 @@ class ABTester
 
     private function trial()
     {
-        $view = ($this->tester->isActive()) ? (session($this->field('name')) ?: $this->nextTrial()) : $this->tester->original;
+        $view = ($this->tester->isActive()) ? (session($this->field('trial')) ?: $this->nextTrial()) : $this->tester->original;
 
         if (view()->exists($view)) {
             return view($view, $this->data)->render();
@@ -169,7 +169,7 @@ class ABTester
     private function nextTrial()
     {
         return tap($this->tester->trials()->orderBy('visitors', 'asc')->firstOrFail()->name, function ($name) {
-            session()->put($this->field('name'), $name);
+            session()->put($this->field('trial'), $name);
             $this->pageView($name);
         });
     }
