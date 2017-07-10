@@ -214,7 +214,7 @@ class ABTester
 
     private function detectGoalCompletion($pathInfo)
     {
-        $goal = $this->tester->trial(session($this->field('name')))->goals->first(function ($goal) use ($pathInfo) {
+        $goal = $this->tester->trial(session($this->field('trial')))->goals->first(function ($goal) use ($pathInfo) {
             return $goal->route == $pathInfo;
         });
 
