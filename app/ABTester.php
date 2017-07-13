@@ -128,6 +128,8 @@ class ABTester
 
         $this->tester = $this->experiment->fetch(session($this->field('name')));
 
+        if($this->tester->isNotActive()) return;
+
         $this->pageView(session($this->field('trial')));
 
         if ($this->isRefreshed($referer, $pathInfo)) {
