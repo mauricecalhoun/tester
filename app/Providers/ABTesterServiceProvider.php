@@ -34,13 +34,9 @@ class ABTesterServiceProvider extends ServiceProvider
 
     private function databaseFiles()
     {
-      $path = database_path('abtester.sqlite');
+      $path         = database_path('abtester.sqlite');
+      $defaultPath  = base_path("vendor/mauricecalhoun/tester/app/Database/database.sqlite");
 
-      if(!file_exists($path))
-      {
-        return base_path("vendor/mauricecalhoun/tester/app/Database/database.sqlite");
-      }
-
-      return $path;
+      return !file_exists($path) ? $defaultPath : $path;
     }
   }
