@@ -21,7 +21,7 @@ class ABTesterServiceProvider extends ServiceProvider
     {
         $config = [
             'driver'   => 'sqlite',
-            'database' => base_path("vendor/mauricecalhoun/tester/app/Database/database.sqlite"),
+            'database' => $this->databaseFiles(),
             'prefix'   => '',
         ];
 
@@ -29,6 +29,18 @@ class ABTesterServiceProvider extends ServiceProvider
 
         $this->commands($this->commands);
 
-        Route::aliasMiddleware('abtest', ABTesting::class);        
+        Route::aliasMiddleware('abtest', ABTesting::class);
     }
-}
+
+    private function databaseFiles()
+    {
+      $path = database_path('abtester.sqlite');
+
+      if(!file_exists($path))
+      {
+        return base_path("vendor/mauricecalhoun/tester/app/Database/database.sqlite");
+      }
+
+      return $path;
+    }
+  }
